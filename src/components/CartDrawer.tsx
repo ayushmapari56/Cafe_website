@@ -73,6 +73,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({
 
       <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <motion.div
+          data-lenis-prevent
           initial={{ x: '100%' }}
           animate={{ x: 0 }}
           exit={{ x: '100%' }}

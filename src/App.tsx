@@ -3,9 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Lenis from 'lenis';
+import 'lenis/dist/lenis.css';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Navbar } from './components/Navbar';
-import { ParallaxElements } from './components/ParallaxElements';
 import { HeroSection } from './components/HeroSection';
 import { StorySection } from './components/StorySection';
 import { MenuSection } from './components/MenuSection';
@@ -19,12 +22,41 @@ import { CartItem, MenuItem } from './types';
 import { Check } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
+gsap.registerPlugin(ScrollTrigger);
+
 export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
   const [isReservationOpen, setIsReservationOpen] = useState<boolean>(false);
   const [activeItemModal, setActiveItemModal] = useState<MenuItem | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Initialize Lenis Inertia Smooth Scroll & bind to GSAP ScrollTrigger
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const lenis = new Lenis({
+      lerp: 0.09, // smooth inertia feel (0.08 - 0.1 per spec)
+      smoothWheel: true,
+      wheelMultiplier: 1,
+      touchMultiplier: 1.5,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+
+    const rafTicker = (time: number) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(rafTicker);
+    gsap.ticker.lagSmoothing(0);
+
+    return () => {
+      gsap.ticker.remove(rafTicker);
+      lenis.destroy();
+    };
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -105,9 +137,6 @@ export default function App() {
   return (
     <div className="relative min-h-screen bg-[#181818] text-[#e5e2dc] selection:bg-[#c98f7e]/30 selection:text-white overflow-x-hidden">
       
-      {/* Dynamic Parallax Floating Cutout Garnishes */}
-      <ParallaxElements />
-
       {/* Fixed Transparent Navigation Bar */}
       <Navbar
         cartCount={totalCartCount}
@@ -138,7 +167,7 @@ export default function App() {
         {/* 4.5 The Best Ingredients Section (Centered block + horizontal flat-lay row of cutouts) */}
         <IngredientsSection />
 
-        {/* 4.6 Reservation Section (Full-width darkened interior photo CTA banner) */}
+        {/* 4.6 Reservation Section (CTA banner with inner parallax image window) */}
         <ReservationSection />
       </main>
 

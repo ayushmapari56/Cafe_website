@@ -1,32 +1,106 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CAFE_IMAGES } from '../data/cafeData';
 
 export const EventsSection: React.FC = () => {
-  return (
-    <section id="events" className="relative py-16 sm:py-28 lg:py-36 bg-[#181818] overflow-hidden">
-      
-      {/* Background salt dust above the card */}
-      <div className="absolute top-8 right-1/4 w-72 h-72 sm:w-80 sm:h-80 bg-radial from-white/5 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-12 right-8 sm:right-20 w-48 h-48 sm:w-56 sm:h-56 salt-dust-bg opacity-15 pointer-events-none" />
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const spoonRef = useRef<HTMLDivElement>(null);
+  const dustRef = useRef<HTMLDivElement>(null);
 
-      <div className="max-w-[1140px] mx-auto px-4 sm:px-8 lg:px-10">
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      // 1. Card rises from bottom edge overlapping menu
+      if (cardRef.current) {
+        gsap.fromTo(
+          cardRef.current,
+          { y: 120 },
+          {
+            y: -40,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8,
+            },
+          }
+        );
+      }
+
+      // 2. Corner spoon decoration shows up JUST AFTER the card is in place (t=7.75s)
+      if (spoonRef.current) {
+        gsap.fromTo(
+          spoonRef.current,
+          { opacity: 0, scale: 0.8, y: 15 },
+          {
+            opacity: 1,
+            scale: 1,
+            y: 0,
+            ease: 'power2.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 60%',
+              end: 'top 45%',
+              scrub: 0.5,
+            },
+          }
+        );
+      }
+
+      // 3. Salt dust behind top edge appears slightly after the spoon (t=8.0s)
+      if (dustRef.current) {
+        gsap.fromTo(
+          dustRef.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 0.7,
+            y: -10,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 52%',
+              end: 'top 38%',
+              scrub: 0.5,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="events"
+      className="relative -mt-10 sm:-mt-16 lg:-mt-20 py-16 sm:py-24 lg:py-32 bg-transparent overflow-hidden z-20"
+    >
+      {/* Background salt dust above the card (shows up just after card arrives) */}
+      <div
+        ref={dustRef}
+        className="absolute top-6 right-6 sm:right-16 w-64 h-64 sm:w-80 sm:h-80 pointer-events-none will-change-transform z-10"
+      >
+        <div className="absolute inset-0 bg-radial from-white/10 to-transparent blur-3xl" />
+        <div className="absolute inset-0 salt-dust-bg opacity-30" />
+      </div>
+
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-8 lg:px-10 relative z-20">
         
-        {/* Mirrored Horizontal Split Card: White Panel on Left (~60%), Photo on Right (~40%) */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative grid grid-cols-1 lg:grid-cols-12 items-center"
+        {/* Mirrored Horizontal Split Card */}
+        <div
+          ref={cardRef}
+          className="relative grid grid-cols-1 lg:grid-cols-12 items-center will-change-transform"
         >
           {/* Photo on Top on Mobile, Right on Desktop (~40%) */}
           <div className="lg:col-span-5 relative z-10 lg:-ml-8 mb-4 lg:mb-0 order-1 lg:order-2">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.6 }}
-              className="relative w-full h-[240px] xs:h-[280px] sm:h-[380px] lg:h-[490px] shadow-[0_20px_45px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden"
-            >
+            <div className="relative w-full h-[240px] xs:h-[280px] sm:h-[380px] lg:h-[490px] shadow-[0_20px_45px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden">
               <img
                 src={CAFE_IMAGES.testimonialDish}
                 alt="Velvet & Stone gathering and tasting events"
@@ -34,7 +108,7 @@ export const EventsSection: React.FC = () => {
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
-            </motion.div>
+            </div>
           </div>
 
           {/* Pure White Text Panel on Left (~60%) */}
@@ -81,8 +155,11 @@ export const EventsSection: React.FC = () => {
               </a>
             </div>
 
-            {/* Decorative Extra: Wooden Spoon Decoration Overlapping the Bottom-Right Corner */}
-            <div className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 w-20 h-20 sm:w-32 sm:h-32 pointer-events-none drop-shadow-garnish z-30">
+            {/* Corner Spoon Decoration (reveals just after card arrives, t=7.75s) */}
+            <div
+              ref={spoonRef}
+              className="absolute -bottom-6 -right-6 sm:-bottom-10 sm:-right-10 w-20 h-20 sm:w-32 sm:h-32 pointer-events-none drop-shadow-garnish z-30 will-change-transform"
+            >
               <svg viewBox="0 0 140 140" className="w-full h-full filter drop-shadow-[0_12px_15px_rgba(0,0,0,0.35)]">
                 <path
                   d="M10,20 C35,50 65,80 95,110 C102,117 110,118 116,112 C122,106 119,98 112,91 C80,60 50,30 20,8 Z"
@@ -97,7 +174,7 @@ export const EventsSection: React.FC = () => {
 
           </div>
 
-        </motion.div>
+        </div>
 
       </div>
     </section>

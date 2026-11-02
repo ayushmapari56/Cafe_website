@@ -1,32 +1,97 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { CAFE_IMAGES } from '../data/cafeData';
 
 export const StorySection: React.FC = () => {
-  return (
-    <section id="story" className="relative py-16 sm:py-28 lg:py-36 bg-[#181818] overflow-hidden">
-      
-      {/* Background salt & smoke dust behind top-left */}
-      <div className="absolute top-10 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-radial from-white/5 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute top-16 left-8 sm:left-12 w-48 h-48 sm:w-64 sm:h-64 salt-dust-bg opacity-15 pointer-events-none" />
+  const sectionRef = useRef<HTMLElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const dustRef = useRef<HTMLDivElement>(null);
+  const herbRef = useRef<HTMLDivElement>(null);
 
-      <div className="max-w-[1140px] mx-auto px-4 sm:px-8 lg:px-10">
+  useEffect(() => {
+    gsap.registerPlugin(ScrollTrigger);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+
+    const ctx = gsap.context(() => {
+      const trigger = {
+        trigger: sectionRef.current,
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 0.8,
+      };
+
+      // Card rises up from bottom while hero is still visible (overlapping)
+      if (cardRef.current) {
+        gsap.fromTo(
+          cardRef.current,
+          { y: 120 },
+          {
+            y: -50,
+            ease: 'none',
+            scrollTrigger: trigger,
+          }
+        );
+      }
+
+      // Salt dust layer: sits slightly higher, moves at ~1.2x speed trailing behind the card
+      if (dustRef.current) {
+        gsap.fromTo(
+          dustRef.current,
+          { y: 90, opacity: 0.4 },
+          {
+            y: -90,
+            opacity: 0.8,
+            ease: 'none',
+            scrollTrigger: trigger,
+          }
+        );
+      }
+
+      // Herb sprig: separate layer drifting at bottom-right corner (~0.85x speed)
+      if (herbRef.current) {
+        gsap.fromTo(
+          herbRef.current,
+          { y: 50, rotate: -5 },
+          {
+            y: -20,
+            rotate: 8,
+            ease: 'none',
+            scrollTrigger: trigger,
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="story"
+      className="relative -mt-10 sm:-mt-16 lg:-mt-20 py-16 sm:py-24 lg:py-32 bg-transparent overflow-hidden z-20"
+    >
+      {/* Background salt & smoke dust behind top-left (speed: ~1.2x) */}
+      <div
+        ref={dustRef}
+        className="absolute top-8 left-6 sm:left-14 w-64 h-64 sm:w-96 sm:h-96 pointer-events-none will-change-transform z-10"
+      >
+        <div className="absolute inset-0 bg-radial from-white/10 to-transparent blur-3xl" />
+        <div className="absolute inset-0 salt-dust-bg opacity-30" />
+      </div>
+
+      <div className="max-w-[1140px] mx-auto px-4 sm:px-8 lg:px-10 relative z-20">
         
         {/* Centered Horizontal Split Card Container */}
-        <motion.div
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="relative grid grid-cols-1 lg:grid-cols-12 items-center"
+        <div
+          ref={cardRef}
+          className="relative grid grid-cols-1 lg:grid-cols-12 items-center will-change-transform"
         >
           {/* Photo on the Left (~40%): Offset and taller than panel to create the layered look */}
           <div className="lg:col-span-5 relative z-20 lg:-mr-8 mb-4 lg:mb-0">
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              transition={{ duration: 0.6 }}
-              className="relative w-full h-[240px] xs:h-[280px] sm:h-[380px] lg:h-[490px] shadow-[0_20px_45px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden"
-            >
+            <div className="relative w-full h-[240px] xs:h-[280px] sm:h-[380px] lg:h-[490px] shadow-[0_20px_45px_rgba(0,0,0,0.85)] ring-1 ring-white/10 overflow-hidden">
               <img
                 src={CAFE_IMAGES.geishaPourOver}
                 alt="Artisanal pour over and slow roasting process"
@@ -34,9 +99,9 @@ export const StorySection: React.FC = () => {
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
-            </motion.div>
+            </div>
 
-            {/* Salt particles scatter behind top-left corner */}
+            {/* Micro salt particles top-left */}
             <div className="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 w-16 h-16 sm:w-20 sm:h-20 pointer-events-none">
               <svg viewBox="0 0 80 80" className="w-full h-full">
                 <rect x="15" y="20" width="3" height="3" fill="#ffffff" opacity="0.6" transform="rotate(30 15 20)" />
@@ -80,8 +145,11 @@ export const StorySection: React.FC = () => {
               </a>
             </div>
 
-            {/* Decorative Extra: Fresh Herb Sprig Overlapping the Bottom-Right Corner */}
-            <div className="absolute -bottom-5 -right-5 sm:-bottom-8 sm:-right-8 w-20 h-20 sm:w-28 sm:h-28 pointer-events-none drop-shadow-garnish z-30">
+            {/* Decorative Extra: Fresh Herb Sprig Overlapping the Bottom-Right Corner (speed: ~0.85x) */}
+            <div
+              ref={herbRef}
+              className="absolute -bottom-5 -right-5 sm:-bottom-8 sm:-right-8 w-20 h-20 sm:w-28 sm:h-28 pointer-events-none drop-shadow-garnish z-30 will-change-transform"
+            >
               <svg viewBox="0 0 100 100" className="w-full h-full filter drop-shadow-[0_10px_12px_rgba(0,0,0,0.35)]">
                 <path d="M15,85 Q45,55 85,15" stroke="#3d633b" strokeWidth="2.5" fill="none" strokeLinecap="round" />
                 <path d="M35,68 C20,60 25,40 45,45 C45,60 40,68 35,68 Z" fill="#4d7c4b" />
@@ -93,7 +161,7 @@ export const StorySection: React.FC = () => {
 
           </div>
 
-        </motion.div>
+        </div>
 
       </div>
     </section>

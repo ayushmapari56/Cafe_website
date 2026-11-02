@@ -1,7 +1,105 @@
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useRef, useLayoutEffect } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export const IngredientsSection: React.FC = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const headingRef = useRef<HTMLDivElement | null>(null);
+  const rowRef = useRef<HTMLDivElement | null>(null);
+  const centerpieceRef = useRef<HTMLDivElement | null>(null);
+  const sideItemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useLayoutEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      // 1. Heading block: scrubbed fade from dim grey (0.25) to full white (1.0)
+      if (headingRef.current) {
+        gsap.fromTo(
+          headingRef.current,
+          { opacity: 0.2, y: 35 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: headingRef.current,
+              start: 'top 92%',
+              end: 'top 62%',
+              scrub: 0.6,
+            },
+          }
+        );
+      }
+
+      // 2. Ingredients row: enters as a single unit from below
+      if (rowRef.current) {
+        gsap.fromTo(
+          rowRef.current,
+          { opacity: 0.25, y: 70 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: rowRef.current,
+              start: 'top 90%',
+              end: 'top 60%',
+              scrub: 0.6,
+            },
+          }
+        );
+      }
+
+      // 3. Centerpiece subtle floating parallax drift
+      if (centerpieceRef.current) {
+        gsap.fromTo(
+          centerpieceRef.current,
+          { yPercent: 14, scale: 0.96 },
+          {
+            yPercent: -12,
+            scale: 1.02,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: rowRef.current,
+              start: 'top 85%',
+              end: 'bottom 20%',
+              scrub: 0.8,
+            },
+          }
+        );
+      }
+
+      // 4. Side ingredients slight varied drift speeds (subtle garnish separation)
+      sideItemsRef.current.forEach((el, idx) => {
+        if (!el) return;
+        const drift = idx % 2 === 0 ? -16 : 12;
+        gsap.fromTo(
+          el,
+          { yPercent: 10 },
+          {
+            yPercent: drift,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: rowRef.current,
+              start: 'top 85%',
+              end: 'bottom 15%',
+              scrub: 0.8,
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   const ingredients = [
     {
       name: 'Cardamom & Salt',
@@ -94,19 +192,18 @@ export const IngredientsSection: React.FC = () => {
   ];
 
   return (
-    <section id="ingredients" className="relative py-16 sm:py-28 lg:py-36 bg-[#181818] overflow-hidden">
-      
+    <section
+      ref={sectionRef}
+      id="ingredients"
+      className="relative -mt-6 sm:-mt-10 lg:-mt-16 pt-16 sm:pt-28 pb-20 sm:pb-32 bg-[#181818] overflow-hidden z-20"
+    >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] sm:w-[700px] h-[350px] bg-radial from-white/[0.04] to-transparent blur-3xl pointer-events-none" />
 
       <div className="max-w-[1200px] mx-auto px-4 sm:px-8 lg:px-10">
-        
-        {/* Centered Text Block */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-60px' }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3 mb-12 sm:mb-20"
+        {/* Centered Text Block: Scrubbed fade from dim grey to full white */}
+        <div
+          ref={headingRef}
+          className="text-center max-w-2xl mx-auto space-y-2 sm:space-y-3 mb-14 sm:mb-24 will-change-transform will-change-opacity"
         >
           <div className="script-kicker !text-[#c98f7e] !text-3xl sm:!text-4xl">
             Discover
@@ -117,19 +214,24 @@ export const IngredientsSection: React.FC = () => {
           <p className="text-xs sm:text-base text-[#9e9a93] leading-relaxed font-sans font-light">
             We partner exclusively with single-estate growers and generational millers who harvest at peak biological ripeness, honoring soil integrity and pure unadulterated flavor.
           </p>
-        </motion.div>
+        </div>
 
-        {/* Flat-Lay Row of Ingredient Cutouts */}
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-8 items-center justify-items-center">
+        {/* Flat-Lay Row of Ingredient Cutouts entering as a unit */}
+        <div
+          ref={rowRef}
+          className="grid grid-cols-2 md:grid-cols-5 gap-4 sm:gap-8 items-center justify-items-center will-change-transform will-change-opacity"
+        >
           {ingredients.map((ing, idx) => (
-            <motion.div
+            <div
               key={ing.name}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ duration: 0.7, delay: idx * 0.1, ease: [0.16, 1, 0.3, 1] }}
-              whileHover={{ y: -5, scale: 1.04 }}
-              className={`flex flex-col items-center text-center space-y-2 sm:space-y-4 select-none ${
+              ref={(el) => {
+                if (ing.isCenterpiece) {
+                  centerpieceRef.current = el;
+                } else {
+                  sideItemsRef.current[idx] = el;
+                }
+              }}
+              className={`flex flex-col items-center text-center space-y-2 sm:space-y-4 select-none will-change-transform transition-transform duration-300 hover:scale-105 ${
                 ing.isCenterpiece ? 'col-span-2 md:col-span-1 -mt-2 sm:-mt-6' : ''
               }`}
             >
@@ -138,17 +240,20 @@ export const IngredientsSection: React.FC = () => {
               </div>
 
               <div className="space-y-0.5">
-                <div className={`font-serif font-bold text-[#ffffff] ${ing.isCenterpiece ? 'text-sm sm:text-lg text-[#c98f7e]' : 'text-xs sm:text-sm'}`}>
+                <div
+                  className={`font-serif font-bold text-[#ffffff] ${
+                    ing.isCenterpiece ? 'text-sm sm:text-lg text-[#c98f7e]' : 'text-xs sm:text-sm'
+                  }`}
+                >
                   {ing.name}
                 </div>
                 <div className="text-[10px] sm:text-[11px] text-[#7d7973] max-w-[150px] leading-snug font-sans">
                   {ing.desc}
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-
       </div>
     </section>
   );

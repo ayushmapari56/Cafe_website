@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useLayoutEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar as CalendarIcon, Clock, Users, MapPin, CheckCircle2, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ReservationData } from '../types';
 import { CAFE_IMAGES } from '../data/cafeData';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface ReservationSectionProps {
   isOpenModal?: boolean;
@@ -28,8 +32,59 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
     details: ReservationData;
   } | null>(null);
 
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const bgImageRef = useRef<HTMLImageElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
+
   const activeModal = isOpenModal !== undefined ? isOpenModal : isModalOpen;
   const handleClose = onCloseModal || (() => setIsModalOpen(false));
+
+  useLayoutEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion || isOpenModal) return;
+
+    const ctx = gsap.context(() => {
+      // Inner parallax: background image drifts at 0.3-0.5x page speed
+      if (bgImageRef.current && sectionRef.current) {
+        gsap.fromTo(
+          bgImageRef.current,
+          { yPercent: -18, scale: 1.15 },
+          {
+            yPercent: 18,
+            scale: 1.15,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 0.8,
+            },
+          }
+        );
+      }
+
+      // Content gently settles into place
+      if (contentRef.current && sectionRef.current) {
+        gsap.fromTo(
+          contentRef.current,
+          { opacity: 0.4, y: 30 },
+          {
+            opacity: 1,
+            y: 0,
+            ease: 'power1.out',
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top 80%',
+              end: 'top 45%',
+              scrub: 0.6,
+            },
+          }
+        );
+      }
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, [isOpenModal]);
 
   const timeSlots = [
     { time: '07:30 AM', label: 'First Light & Brews' },
@@ -78,54 +133,56 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
 
   return (
     <>
-      {/* 4.6 Reservation Full-Width Photo CTA Banner */}
-      <section
-        id="reservation"
-        className="relative py-24 sm:py-36 lg:py-48 flex items-center justify-center overflow-hidden bg-[#181818]"
-      >
-        <div className="absolute inset-0 z-0">
-          <img
-            src={CAFE_IMAGES.geishaPourOver}
-            alt="Velvet & Stone Roastery Interior"
-            className="w-full h-full object-cover filter brightness-[0.28] contrast-125"
-            referrerPolicy="no-referrer"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#181818] via-transparent to-[#181818]" />
-          <div className="absolute inset-0 bg-[#181818]/40" />
-        </div>
+      {/* 4.6 Reservation Horizontal Band CTA Banner */}
+      {!isOpenModal && (
+        <section
+          ref={sectionRef}
+          id="reservation"
+          className="relative py-24 sm:py-36 lg:py-44 flex items-center justify-center overflow-hidden bg-[#181818] z-20"
+        >
+          {/* Parallax inner image window */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <img
+              ref={bgImageRef}
+              src={CAFE_IMAGES.geishaPourOver}
+              alt="Velvet & Stone Roastery Interior"
+              className="w-full h-[135%] -top-[17%] absolute inset-x-0 object-cover filter brightness-[0.28] contrast-125 will-change-transform"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#181818] via-transparent to-[#181818]" />
+            <div className="absolute inset-0 bg-[#181818]/40" />
+          </div>
 
-        {/* Centered Content */}
-        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="space-y-3 sm:space-y-4"
+          {/* Centered Content moving at natural speed */}
+          <div
+            ref={contentRef}
+            className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center space-y-4 sm:space-y-6 will-change-transform will-change-opacity"
           >
-            <div className="script-kicker !text-[#c98f7e] !text-3xl sm:!text-5xl">
-              Reservation
+            <div className="space-y-3 sm:space-y-4">
+              <div className="script-kicker !text-[#c98f7e] !text-3xl sm:!text-5xl">
+                Reservation
+              </div>
+
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight">
+                Book Your Table
+              </h2>
+
+              <p className="text-xs sm:text-base text-[#d1cec7] font-sans font-light max-w-lg mx-auto leading-relaxed">
+                Whether joining us for an unhurried morning pour-over, afternoon pastry, or reserved study nook.
+              </p>
+
+              <div className="pt-2 sm:pt-4">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="btn-outline-editorial py-3 sm:py-3.5 px-7 sm:px-8 text-xs tracking-widest uppercase cursor-pointer"
+                >
+                  Online Booking
+                </button>
+              </div>
             </div>
-
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight">
-              Book Your Table
-            </h2>
-
-            <p className="text-xs sm:text-base text-[#d1cec7] font-sans font-light max-w-lg mx-auto leading-relaxed">
-              Whether joining us for an unhurried morning pour-over, afternoon pastry, or reserved study nook.
-            </p>
-
-            <div className="pt-2 sm:pt-4">
-              <button
-                onClick={() => setIsModalOpen(true)}
-                className="btn-outline-editorial py-3 sm:py-3.5 px-7 sm:px-8 text-xs tracking-widest uppercase"
-              >
-                Online Booking
-              </button>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Interactive Reservation Modal Window */}
       <AnimatePresence>
@@ -140,8 +197,9 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
               className="fixed inset-0 bg-black/85 backdrop-blur-md"
             />
 
-            {/* Modal Dialog */}
+            {/* Modal Dialog with data-lenis-prevent */}
             <motion.div
+              data-lenis-prevent
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
