@@ -39,14 +39,12 @@ export const ParallaxElements: React.FC = () => {
   const yBeans = useTransform(scrollY, [0, 3500], [180, -600]);
   const rotateBeans = useTransform(scrollY, [0, 3500], [0, 120]);
 
-  const yCardamom = useTransform(scrollY, [0, 4000], [240, -750]);
-
   if (shouldReduceMotion) {
     return null;
   }
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-10 overflow-hidden" aria-hidden="true">
+    <div className="pointer-events-none fixed inset-0 z-10 overflow-hidden hidden md:block" aria-hidden="true">
       {/* 1. Top-Left: Wooden Spoon with Spices */}
       <motion.div
         style={{
@@ -54,7 +52,7 @@ export const ParallaxElements: React.FC = () => {
           rotate: rotateSpoon,
           x: useTransform(smoothMouseX, (val) => val * -15),
         }}
-        className="absolute top-16 -left-12 lg:left-4 w-32 h-32 lg:w-44 lg:h-44"
+        className="absolute top-16 left-4 w-36 h-36 lg:w-44 lg:h-44"
       >
         <motion.div
           animate={{ y: [0, -5, 0] }}
@@ -74,7 +72,6 @@ export const ParallaxElements: React.FC = () => {
             />
             <ellipse cx="125" cy="125" rx="34" ry="24" transform="rotate(-40 125 125)" fill="url(#woodDark)" />
             <ellipse cx="125" cy="124" rx="26" ry="16" transform="rotate(-40 125 125)" fill="#3a1c0d" />
-            {/* Salt crystals */}
             <circle cx="120" cy="122" r="2" fill="#ffffff" opacity="0.9" />
             <circle cx="128" cy="125" r="1.5" fill="#ffffff" opacity="0.8" />
             <circle cx="132" cy="120" r="1.5" fill="#c98f7e" />
@@ -89,7 +86,7 @@ export const ParallaxElements: React.FC = () => {
           rotate: rotateStarAnise,
           x: useTransform(smoothMouseX, (val) => val * 20),
         }}
-        className="absolute top-28 right-4 lg:right-16 w-24 h-24 lg:w-32 lg:h-32"
+        className="absolute top-28 right-8 lg:right-16 w-28 h-28 lg:w-32 lg:h-32"
       >
         <motion.div
           animate={{ y: [0, 6, 0] }}
@@ -116,7 +113,7 @@ export const ParallaxElements: React.FC = () => {
           rotate: rotateCinnamon,
           x: useTransform(smoothMouseX, (val) => val * -12),
         }}
-        className="absolute top-[52vh] -left-6 lg:left-8 w-28 h-28 lg:w-36 lg:h-36"
+        className="absolute top-[52vh] left-4 lg:left-8 w-28 h-28 lg:w-36 lg:h-36"
       >
         <motion.div
           animate={{ y: [0, -6, 0] }}
@@ -139,7 +136,7 @@ export const ParallaxElements: React.FC = () => {
           rotate: rotateMint,
           x: useTransform(smoothMouseX, (val) => val * 16),
         }}
-        className="absolute top-[64vh] right-3 lg:right-12 w-24 h-24 lg:w-30 lg:h-30"
+        className="absolute top-[64vh] right-6 lg:right-12 w-24 h-24 lg:w-30 lg:h-30"
       >
         <motion.div
           animate={{ y: [0, 8, 0] }}
@@ -158,7 +155,7 @@ export const ParallaxElements: React.FC = () => {
           y: yBeans,
           rotate: rotateBeans,
         }}
-        className="absolute top-[85vh] left-6 lg:left-24 w-24 h-24"
+        className="absolute top-[85vh] left-10 lg:left-24 w-24 h-24"
       >
         <svg viewBox="0 0 90 90" className="w-full h-full filter drop-shadow-[0_12px_16px_rgba(0,0,0,0.85)]">
           <g transform="translate(30, 32) rotate(28)">

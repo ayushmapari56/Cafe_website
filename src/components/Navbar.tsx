@@ -14,11 +14,10 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 30);
 
-      // Simple section spy
       const sections = ['home', 'story', 'menu', 'events', 'ingredients', 'reservation'];
-      const scrollPos = window.scrollY + 200;
+      const scrollPos = window.scrollY + 180;
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {
@@ -49,20 +48,20 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? 'bg-[#181818]/90 backdrop-blur-md border-b border-white/5 py-4 shadow-2xl'
-          : 'bg-transparent py-6 sm:py-7'
+          ? 'bg-[#181818]/95 backdrop-blur-md border-b border-white/5 py-3.5 sm:py-4 shadow-2xl'
+          : 'bg-transparent py-4 sm:py-6'
       }`}
     >
-      <div className="max-w-[1240px] mx-auto px-6 sm:px-10 flex items-center justify-between gap-6">
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-8 lg:px-10 flex items-center justify-between gap-4">
         {/* Left: Script Wordmark in Rose/Copper */}
         <a
           href="#"
-          className="font-script text-3xl sm:text-4xl text-[#c98f7e] hover:text-[#dfb2a4] transition-colors whitespace-nowrap shrink-0 tracking-wide select-none"
+          className="font-script text-2xl sm:text-3xl lg:text-4xl text-[#c98f7e] hover:text-[#dfb2a4] transition-colors whitespace-nowrap shrink-0 tracking-wide select-none"
         >
           Velvet & Stone
         </a>
 
-        {/* Right: Nav items, language switcher, cart */}
+        {/* Right: Nav items, language switcher, cart for Desktop */}
         <div className="hidden lg:flex items-center gap-7">
           <nav className="flex items-center gap-6 xl:gap-8 text-[13px] tracking-wider uppercase font-medium">
             {navLinks.map((link) => {
@@ -109,7 +108,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
 
             <button
               onClick={onOpenReservation}
-              className="btn-outline-editorial text-[11px] py-2 px-4 rounded-none"
+              className="btn-outline-editorial text-[11px] py-2 px-4"
             >
               Book Table
             </button>
@@ -117,15 +116,15 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
         </div>
 
         {/* Mobile Hamburger & Cart */}
-        <div className="flex items-center gap-3 lg:hidden">
+        <div className="flex items-center gap-2 lg:hidden">
           <button
             onClick={onOpenCart}
             aria-label="View shopping bag"
-            className="relative p-2 text-white/80 hover:text-white cursor-pointer"
+            className="relative p-2.5 text-white/85 hover:text-white active:scale-95 transition-transform"
           >
             <ShoppingBag className="w-5 h-5" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-[#c98f7e] text-[#181818] text-[10px] font-bold flex items-center justify-center tabular-nums">
+              <span className="absolute top-1 right-1 w-4 h-4 rounded-full bg-[#c98f7e] text-[#181818] text-[10px] font-bold flex items-center justify-center tabular-nums">
                 {cartCount}
               </span>
             )}
@@ -133,7 +132,7 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-white/80 hover:text-white cursor-pointer"
+            className="p-2.5 text-white/85 hover:text-white active:scale-95 transition-transform cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <MenuIcon className="w-6 h-6" />}
@@ -141,21 +140,21 @@ export const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, onOpenRes
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
+      {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#181818]/98 border-b border-white/10 px-8 py-8 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top duration-200">
-          <nav className="flex flex-col gap-5 text-sm tracking-widest uppercase font-medium">
+        <div className="lg:hidden bg-[#181818]/98 border-b border-white/10 px-6 py-6 shadow-2xl backdrop-blur-xl animate-in slide-in-from-top duration-200">
+          <nav className="flex flex-col gap-4 text-sm tracking-widest uppercase font-medium">
             {navLinks.map((link) => (
               <a
                 key={link.id}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-1 text-[#9e9a93] hover:text-[#c98f7e] transition-colors"
+                className="py-2 text-[#9e9a93] hover:text-[#c98f7e] active:text-[#c98f7e] transition-colors border-b border-white/5"
               >
                 {link.label}
               </a>
             ))}
-            <div className="pt-4 border-t border-white/10 flex flex-col gap-3">
+            <div className="pt-2 flex flex-col gap-3">
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);

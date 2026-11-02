@@ -81,9 +81,8 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
       {/* 4.6 Reservation Full-Width Photo CTA Banner */}
       <section
         id="reservation"
-        className="relative py-36 sm:py-48 flex items-center justify-center overflow-hidden bg-[#181818]"
+        className="relative py-24 sm:py-36 lg:py-48 flex items-center justify-center overflow-hidden bg-[#181818]"
       >
-        {/* Full-width darkened restaurant interior photo background */}
         <div className="absolute inset-0 z-0">
           <img
             src={CAFE_IMAGES.geishaPourOver}
@@ -91,39 +90,35 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
             className="w-full h-full object-cover filter brightness-[0.28] contrast-125"
             referrerPolicy="no-referrer"
           />
-          {/* Near-black gradient overlays */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#181818] via-transparent to-[#181818]" />
           <div className="absolute inset-0 bg-[#181818]/40" />
         </div>
 
         {/* Centered Content */}
-        <div className="relative z-10 max-w-2xl mx-auto px-6 text-center space-y-6">
+        <div className="relative z-10 max-w-2xl mx-auto px-4 sm:px-6 text-center space-y-4 sm:space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="space-y-4"
+            className="space-y-3 sm:space-y-4"
           >
-            {/* Script Kicker */}
-            <div className="script-kicker !text-[#c98f7e] !text-4xl sm:!text-5xl">
+            <div className="script-kicker !text-[#c98f7e] !text-3xl sm:!text-5xl">
               Reservation
             </div>
 
-            {/* Bold Serif Headline */}
-            <h2 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif font-bold text-white tracking-tight">
               Book Your Table
             </h2>
 
-            <p className="text-sm sm:text-base text-[#d1cec7] font-sans font-light max-w-lg mx-auto leading-relaxed">
+            <p className="text-xs sm:text-base text-[#d1cec7] font-sans font-light max-w-lg mx-auto leading-relaxed">
               Whether joining us for an unhurried morning pour-over, afternoon pastry, or reserved study nook.
             </p>
 
-            {/* Outlined Button: "Online Booking" */}
-            <div className="pt-4">
+            <div className="pt-2 sm:pt-4">
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="btn-outline-editorial py-3.5 px-8 text-xs tracking-widest uppercase"
+                className="btn-outline-editorial py-3 sm:py-3.5 px-7 sm:px-8 text-xs tracking-widest uppercase"
               >
                 Online Booking
               </button>
@@ -135,7 +130,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
       {/* Interactive Reservation Modal Window */}
       <AnimatePresence>
         {activeModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -145,18 +140,18 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
               className="fixed inset-0 bg-black/85 backdrop-blur-md"
             />
 
-            {/* Modal Dialog (Pure white floating card with editorial typography) */}
+            {/* Modal Dialog */}
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-3xl bg-[#ffffff] text-[#181818] p-6 sm:p-10 shadow-[0_30px_90px_rgba(0,0,0,0.8)] z-10 my-8 max-h-[90vh] overflow-y-auto"
+              className="relative w-full max-w-3xl bg-[#ffffff] text-[#181818] p-5 sm:p-10 shadow-[0_30px_90px_rgba(0,0,0,0.8)] z-10 my-4 sm:my-8 max-h-[92vh] overflow-y-auto"
             >
               {/* Close Button */}
               <button
                 onClick={handleClose}
-                className="absolute top-4 right-4 p-2 text-[#736f68] hover:text-[#181818] transition-colors cursor-pointer"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 p-2 text-[#736f68] hover:text-[#181818] transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -164,14 +159,14 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
 
               {confirmedReservation ? (
                 /* Confirmation Voucher */
-                <div className="text-center py-6 space-y-6">
-                  <div className="w-16 h-16 rounded-full bg-[#f4ece9] text-[#c98f7e] flex items-center justify-center mx-auto shadow-sm">
-                    <CheckCircle2 className="w-10 h-10" />
+                <div className="text-center py-4 sm:py-6 space-y-5">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#f4ece9] text-[#c98f7e] flex items-center justify-center mx-auto shadow-sm">
+                    <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10" />
                   </div>
 
                   <div className="space-y-1">
-                    <div className="script-kicker !text-[#c98f7e] !text-3xl">Reserved</div>
-                    <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#181818]">
+                    <div className="script-kicker !text-[#c98f7e] !text-2xl sm:!text-3xl">Reserved</div>
+                    <h3 className="text-xl sm:text-3xl font-serif font-bold text-[#181818]">
                       Your Table is Held, {confirmedReservation.details.name}!
                     </h3>
                     <p className="text-xs sm:text-sm text-[#635f58]">
@@ -180,19 +175,19 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                   </div>
 
                   {/* Voucher Ticket */}
-                  <div className="max-w-md mx-auto bg-[#faf8f5] p-6 border border-[#e5e0d8] text-left space-y-3 font-sans">
+                  <div className="max-w-md mx-auto bg-[#faf8f5] p-4 sm:p-6 border border-[#e5e0d8] text-left space-y-3 font-sans">
                     <div className="flex justify-between items-center border-b border-[#dfd9ce] pb-3">
                       <div>
                         <div className="text-[10px] text-[#7d7973] uppercase font-bold tracking-wider">Atmosphere Nook</div>
-                        <div className="font-serif font-bold text-base text-[#181818]">{confirmedReservation.details.seatingArea}</div>
+                        <div className="font-serif font-bold text-sm sm:text-base text-[#181818]">{confirmedReservation.details.seatingArea}</div>
                       </div>
                       <div className="text-right">
                         <div className="text-[10px] text-[#7d7973] uppercase font-bold tracking-wider">Party</div>
-                        <div className="font-mono font-bold text-base text-[#c98f7e]">{confirmedReservation.details.partySize} Guests</div>
+                        <div className="font-mono font-bold text-sm sm:text-base text-[#c98f7e]">{confirmedReservation.details.partySize} Guests</div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 text-xs">
+                    <div className="grid grid-cols-2 gap-3 text-xs">
                       <div>
                         <span className="text-[#7d7973]">Date: </span>
                         <span className="font-semibold text-[#181818]">{confirmedReservation.details.date}</span>
@@ -203,25 +198,25 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                       </div>
                     </div>
 
-                    <div className="text-xs text-[#7d7973] pt-2 border-t border-[#dfd9ce] flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#c98f7e]" />
+                    <div className="text-[11px] text-[#7d7973] pt-2 border-t border-[#dfd9ce] flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-[#c98f7e] shrink-0" />
                       <span>Velvet & Stone Roastery · 142 Mercer St, Soho, NYC</span>
                     </div>
                   </div>
 
                   <button
                     onClick={handleReset}
-                    className="px-8 py-3 bg-[#181818] hover:bg-[#333333] text-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
+                    className="w-full sm:w-auto px-8 py-3 bg-[#181818] hover:bg-[#333333] text-white text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
                   >
                     Done
                   </button>
                 </div>
               ) : (
                 /* Reservation Form */
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
                   <div className="text-center space-y-1">
-                    <div className="script-kicker !text-[#c98f7e] !text-3xl">Discover</div>
-                    <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#181818] tracking-tight">
+                    <div className="script-kicker !text-[#c98f7e] !text-2xl sm:!text-3xl">Discover</div>
+                    <h3 className="text-xl sm:text-3xl font-serif font-bold text-[#181818] tracking-tight">
                       Table & Study Nook Booking
                     </h3>
                     <p className="text-xs text-[#736f68]">
@@ -235,7 +230,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                       <Clock className="w-3.5 h-3.5 text-[#c98f7e]" />
                       <span>Select Time Slot</span>
                     </label>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-1.5 sm:gap-2">
                       {timeSlots.map((slot) => (
                         <button
                           key={slot.time}
@@ -266,7 +261,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                         required
                         value={date}
                         onChange={(e) => setDate(e.target.value)}
-                        className="w-full px-3 py-2 text-xs border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
+                        className="w-full px-3 py-2 text-sm border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
                       />
                     </div>
 
@@ -305,7 +300,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                           key={opt.name}
                           type="button"
                           onClick={() => setSeatingArea(opt.name)}
-                          className={`p-3 border text-left transition-all cursor-pointer ${
+                          className={`p-2.5 sm:p-3 border text-left transition-all cursor-pointer ${
                             seatingArea === opt.name
                               ? 'border-[#c98f7e] bg-[#faf8f5] ring-1 ring-[#c98f7e]'
                               : 'border-[#dfd9ce] bg-white hover:bg-[#faf8f5]'
@@ -326,7 +321,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="Full Name *"
-                      className="px-3 py-2 text-xs border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
+                      className="px-3 py-2 text-sm border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
                     />
                     <input
                       type="email"
@@ -334,7 +329,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Email Address *"
-                      className="px-3 py-2 text-xs border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
+                      className="px-3 py-2 text-sm border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
                     />
                     <input
                       type="tel"
@@ -342,7 +337,7 @@ export const ReservationSection: React.FC<ReservationSectionProps> = ({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="Mobile Phone *"
-                      className="px-3 py-2 text-xs border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
+                      className="px-3 py-2 text-sm border border-[#dfd9ce] bg-[#faf8f5] focus:bg-white focus:outline-none focus:border-[#c98f7e]"
                     />
                   </div>
 
