@@ -1,0 +1,6 @@
+{
+  "name": "Velvet & Stone Coffee & Bakehouse",
+  "description": "Artisanal specialty cafe and micro-roastery with fluid independent parallax scrolling animations, single-origin roasts, seasonal pastries, and table reservations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
