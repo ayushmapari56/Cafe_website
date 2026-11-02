@@ -1,12 +1,18 @@
 import { MenuItem, RoastProfile, Testimonial } from '../types';
+import heroDish from '../assets/images/cafe_hero_coffee_dish_1793546760891.jpg';
+import geishaPourOver from '../assets/images/cafe_item_geisha_pourover_1793546761039.jpg';
+import cardamomBun from '../assets/images/cafe_item_cardamom_bun_1793546761152.jpg';
+import matchaCloud from '../assets/images/cafe_item_matcha_cloud_1793546761784.jpg';
+import brunchTartine from '../assets/images/cafe_item_brunch_tartine_1793546763176.jpg';
+import testimonialDish from '../assets/images/cafe_testimonial_dish_1793546763388.jpg';
 
 export const CAFE_IMAGES = {
-  heroDish: '/src/assets/images/cafe_hero_coffee_dish_1793546760891.jpg',
-  geishaPourOver: '/src/assets/images/cafe_item_geisha_pourover_1793546761039.jpg',
-  cardamomBun: '/src/assets/images/cafe_item_cardamom_bun_1793546761152.jpg',
-  matchaCloud: '/src/assets/images/cafe_item_matcha_cloud_1793546761784.jpg',
-  brunchTartine: '/src/assets/images/cafe_item_brunch_tartine_1793546763176.jpg',
-  testimonialDish: '/src/assets/images/cafe_testimonial_dish_1793546763388.jpg',
+  heroDish,
+  geishaPourOver,
+  cardamomBun,
+  matchaCloud,
+  brunchTartine,
+  testimonialDish,
 };
 
 export const MENU_ITEMS: MenuItem[] = [
